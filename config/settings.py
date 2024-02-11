@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'lms.apps.LmsConfig',
 
     'rest_framework',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
