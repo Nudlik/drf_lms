@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
 
 from lms.models import Lesson
 from lms.selializers.lesson import LessonSerializer
