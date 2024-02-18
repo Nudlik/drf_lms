@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
 
-from lms.models import Course
+from lms.models import Course, Lesson
 from lms.selializers.course import CourseSerializer
 
 
@@ -67,3 +67,38 @@ class TestsCRUDCourse(TestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Course.objects.count(), 1)
+
+
+class TestsCRUDLesson(TestCase):
+
+    def setUp(self):
+        moder_group, _ = Group.objects.get_or_create(name='moderator')
+        self.moderator = get_user_model().objects.create(email='1@1.ru', password='1234')
+        self.moderator.groups.add(moder_group)
+        self.user = get_user_model().objects.create(email='2@2.ru', password='1234')
+        self.user2 = get_user_model().objects.create(email='3@3.ru', password='1234')
+
+        self.moderator.save()
+        self.user.save()
+        self.user2.save()
+
+    def test_delete(self):
+        course = Course.objects.create(title='Test Course', description='Test Description', owner=self.user)
+        lesson = Lesson.objects.create(title='Test Lesson', description='Test Description', owner=self.user,
+                                       course=course)
+        lesson2 = Lesson.objects.create(title='Test Lesson', description='Test Description', owner=self.user2,
+                                        course=course)
+
+        url = reverse('lms:lesson-delete', args=[lesson.id])
+        self.client.force_login(self.user2)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.client.force_login(self.moderator)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+        url = reverse('lms:lesson-delete', args=[lesson2.id])
+        self.client.force_login(self.user2)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

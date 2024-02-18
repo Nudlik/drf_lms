@@ -17,3 +17,9 @@ class CourseOrLessonOwner(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return obj.owner == request.user
+
+
+class IsModeratorObj(permissions.BasePermission):
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.groups.filter(name='moderator').exists()
