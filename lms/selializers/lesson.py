@@ -14,4 +14,10 @@ class LessonSerializer(serializers.ModelSerializer):
             'description',
             'link_video',
             'course',
+            'owner',
         ]
+
+    def create(self, validated_data):
+        lesson = Lesson.objects.create(**validated_data)
+        lesson.owner = self.context['request'].user
+        return lesson

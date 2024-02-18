@@ -17,4 +17,10 @@ class CourseSerializer(serializers.ModelSerializer):
             'description',
             'lesson_count',
             'lesson',
+            'owner',
         ]
+
+    def create(self, validated_data):
+        course = Course.objects.create(**validated_data)
+        course.owner = self.context['request'].user
+        return course
