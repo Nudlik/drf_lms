@@ -3,6 +3,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from utils.const import NULLABLE
 
@@ -53,3 +54,11 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = _("user")
+        verbose_name_plural = _("users")
+        permissions = [
+            ('can_view_password', 'может просматривать пароль'),
+            ('can_view_last_name', 'может просматривать фамилию'),
+        ]

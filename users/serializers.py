@@ -12,6 +12,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    del_fields = ['password', 'last_name']
 
     class Meta:
         model = get_user_model()
@@ -37,3 +38,12 @@ class UserSerializer(serializers.ModelSerializer):
                 setattr(instance, field, validated_data.get(field, getattr(instance, field)))
         instance.save()
         return instance
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = self.context.get('request')
+        if request.user.is_staff or request.user.is_superuser:
+            return data
+        elif request.user.id != data.get('id'):
+            [data.pop(i) for i in self.del_fields]
+        return data

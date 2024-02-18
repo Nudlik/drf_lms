@@ -6,7 +6,6 @@ from rest_framework import status
 
 from lms.models import Course
 from lms.selializers.course import CourseSerializer
-from users.serializers import UserSerializer
 
 
 class TestsCRUDCourse(TestCase):
@@ -29,7 +28,6 @@ class TestsCRUDCourse(TestCase):
 
         course = CourseSerializer(data=response.data)
         course.is_valid(raise_exception=True)
-        print(course.data)
         self.assertEqual(course.data['owner'], self.user.id)
 
         self.client.force_login(self.moderator)
