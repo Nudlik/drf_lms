@@ -15,8 +15,11 @@ class TestsCRUDCourse(TestCase):
         self.moderator = get_user_model().objects.create(email='1@1.ru', password='1234')
         self.moderator.groups.add(moder_group)
         self.user = get_user_model().objects.create(email='2@2.ru', password='1234')
+        self.user2 = get_user_model().objects.create(email='3@3.ru', password='1234')
+
         self.user.save()
         self.moderator.save()
+        self.user2.save()
 
     def test_create(self):
         data = {'title': 'Test Course', 'description': 'Test Description'}
@@ -64,6 +67,11 @@ class TestsCRUDCourse(TestCase):
 
         self.client.force_login(self.moderator)
         url = reverse('lms:course-detail', args=[course2.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(Course.objects.count(), 1)
+
+        self.client.force_login(self.user2)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Course.objects.count(), 1)

@@ -11,7 +11,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     perms_methods = {
         'create': [IsAuthenticated, ~IsModerator],
-        'destroy': [IsAuthenticated, CourseOrLessonOwner | ~IsModerator],
+        'destroy': [IsAuthenticated, CourseOrLessonOwner, ~IsModerator],
         'update': [IsAuthenticated, IsAdminUser | CourseOrLessonOwner | IsModerator],
         'partial_update': [IsAuthenticated, IsAdminUser | CourseOrLessonOwner | IsModerator],
     }
