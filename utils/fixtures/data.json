@@ -420,6 +420,42 @@
     }
 },
 {
+    "model": "auth.permission",
+    "pk": 39,
+    "fields": {
+        "name": "Can add Подписка",
+        "content_type": 10,
+        "codename": "add_subscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 40,
+    "fields": {
+        "name": "Can change Подписка",
+        "content_type": 10,
+        "codename": "change_subscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 41,
+    "fields": {
+        "name": "Can delete Подписка",
+        "content_type": 10,
+        "codename": "delete_subscription"
+    }
+},
+{
+    "model": "auth.permission",
+    "pk": 42,
+    "fields": {
+        "name": "Can view Подписка",
+        "content_type": 10,
+        "codename": "view_subscription"
+    }
+},
+{
     "model": "auth.group",
     "pk": 1,
     "fields": {
@@ -500,11 +536,19 @@
     }
 },
 {
-    "model": "sessions.session",
-    "pk": "ozgntqi5rswq1dhnzbqc64k05fpu35h7",
+    "model": "contenttypes.contenttype",
+    "pk": 10,
     "fields": {
-        "session_data": ".eJxVjMsOwiAUBf-FtSG8SsGle7-B3AdI1dCktCvjv2uTLnR7Zua8RIJtrWnreUkTi7MYxel3Q6BHbjvgO7TbLGlu6zKh3BV50C6vM-fn5XD_Dir0-q1D8UUTO6WRwYIx1kddlI6FOGImVUYixeBwUJ7zYNF6x4g2sGdvgnh_AAXdOLY:1rbWlm:tHkKxz_4uAhJUFdX3F_Wt3V3O_0xMDKwYjwIh5yyIxk",
-        "expire_date": "2024-03-03T02:19:06.964Z"
+        "app_label": "lms",
+        "model": "subscription"
+    }
+},
+{
+    "model": "sessions.session",
+    "pk": "fy9pp2715ak2o4yolj8jafxcnx2awfog",
+    "fields": {
+        "session_data": ".eJxVjEEOwiAQRe_C2hCGgRZcuvcMBJhBqoYmpV0Z765NutDtf-_9lwhxW2vYOi9hInEWIE6_W4r5wW0HdI_tNss8t3WZktwVedAurzPx83K4fwc19vqtVQYYqQAieUzoicuoAcFhdtb6mJxKprDGAXFg7XU2VseSrCqGDXrx_gDNBjc-:1rcG84:9txAPte-E2jp04rxGarr6VvC2UumChlytHBblOFJRks",
+        "expire_date": "2024-03-05T02:45:08.938Z"
     }
 },
 {
@@ -512,7 +556,7 @@
     "pk": 1,
     "fields": {
         "password": "pbkdf2_sha256$720000$gHwwm9r9bjJhOfIYpwoFtP$zZA5zsZT8cByGPpP3Pe9dQxDpkf+cGjlTqgPJcnBBeY=",
-        "last_login": "2024-02-18T02:14:32.381Z",
+        "last_login": "2024-02-20T02:45:08.932Z",
         "is_superuser": true,
         "first_name": "",
         "last_name": "",
@@ -593,7 +637,7 @@
     "pk": 5,
     "fields": {
         "password": "pbkdf2_sha256$720000$4KN9XDq75cwTAOu56WhnUX$O1wM+Mzzw/eWUzuFhxYxNKaK4RGn/OtiZZar/pjnO04=",
-        "last_login": "2024-02-18T02:13:44.550Z",
+        "last_login": "2024-02-20T02:43:13.871Z",
         "is_superuser": false,
         "first_name": "",
         "last_name": "",
@@ -785,6 +829,58 @@
         "link_video": "",
         "course": 1,
         "owner": null
+    }
+},
+{
+    "model": "lms.lesson",
+    "pk": 5,
+    "fields": {
+        "title": "Test",
+        "preview": "",
+        "description": "Desc test",
+        "link_video": "",
+        "course": 1,
+        "owner": null
+    }
+},
+{
+    "model": "lms.subscription",
+    "pk": 1,
+    "fields": {
+        "user": 1,
+        "course": 1
+    }
+},
+{
+    "model": "lms.subscription",
+    "pk": 2,
+    "fields": {
+        "user": 1,
+        "course": 2
+    }
+},
+{
+    "model": "lms.subscription",
+    "pk": 4,
+    "fields": {
+        "user": 4,
+        "course": 1
+    }
+},
+{
+    "model": "lms.subscription",
+    "pk": 5,
+    "fields": {
+        "user": 1,
+        "course": 3
+    }
+},
+{
+    "model": "lms.subscription",
+    "pk": 6,
+    "fields": {
+        "user": 5,
+        "course": 1
     }
 }
 ]

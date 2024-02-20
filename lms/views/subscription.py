@@ -13,17 +13,14 @@ from utils.pagination import DefaultPagination
 class SubscriptionAPIView(views.APIView, DefaultPagination):
 
     def get(self, *args, **kwargs):
-        user = self.request.user
-        subs = Subscription.objects.filter(user=user)
+        subs = Subscription.objects.filter(user=self.request.user)
         page = self.paginate_queryset(subs, self.request)
         serializer = SubscriptionSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
 
     def post(self, *args, **kwargs):
-        user = self.request.user
-        course_id = kwargs.get('pk')
-        course = self.get_course_or_404(Course, course_id)
-        subs, _ = Subscription.objects.get_or_create(user=user, course=course)
+        course = self.get_course_or_404(Course, course_id=kwargs.get('pk'))
+        subs, _ = Subscription.objects.get_or_create(user=self.request.user, course=course)
         serializer = SubscriptionSerializer(subs)
         response = {
             'results': serializer.data,
@@ -32,10 +29,8 @@ class SubscriptionAPIView(views.APIView, DefaultPagination):
         return Response(response, status.HTTP_201_CREATED)
 
     def delete(self, *args, **kwargs):
-        user = self.request.user
-        course_id = kwargs.get('pk')
-        course = self.get_course_or_404(Course, course_id)
-        Subscription.objects.filter(user=user, course=course).delete()
+        course = self.get_course_or_404(Course, course_id=kwargs.get('pk'))
+        Subscription.objects.filter(user=self.request.user, course=course).delete()
         response = {
             'detail': f'Курс {course.title} удален из подписок',
         }
