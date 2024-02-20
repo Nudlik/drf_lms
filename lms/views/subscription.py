@@ -7,18 +7,17 @@ from rest_framework.response import Response
 
 from lms.models import Subscription, Course
 from lms.selializers.subscription import SubscriptionSerializer
+from utils.pagination import DefaultPagination
 
 
-class SubscriptionAPIView(views.APIView):
+class SubscriptionAPIView(views.APIView, DefaultPagination):
 
     def get(self, *args, **kwargs):
         user = self.request.user
         subs = Subscription.objects.filter(user=user)
-        serializer = SubscriptionSerializer(subs, many=True)
-        response = {
-            'result': serializer.data,
-        }
-        return Response(response)
+        page = self.paginate_queryset(subs, self.request)
+        serializer = SubscriptionSerializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def post(self, *args, **kwargs):
         user = self.request.user
@@ -27,7 +26,7 @@ class SubscriptionAPIView(views.APIView):
         subs, _ = Subscription.objects.get_or_create(user=user, course=course)
         serializer = SubscriptionSerializer(subs)
         response = {
-            'result': serializer.data,
+            'results': serializer.data,
             'detail': f'Курс {course.title} сохранен в подписки'
         }
         return Response(response, status.HTTP_201_CREATED)

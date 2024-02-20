@@ -7,11 +7,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from users.models import Payments
 from users.permissions import EmailOwner
 from users.serializers import PaymentSerializer, UserSerializer
+from utils.pagination import DefaultPagination
 
 
 class PaymentListView(generics.ListCreateAPIView):
     serializer_class = PaymentSerializer
     queryset = Payments.objects.all()
+    pagination_class = DefaultPagination
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ['date']
     filterset_fields = ['course', 'lesson', 'payment_method']
@@ -20,6 +22,7 @@ class PaymentListView(generics.ListCreateAPIView):
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     queryset = get_user_model().objects.all()
+    pagination_class = DefaultPagination
     perms_methods = {
         'create': [AllowAny],
         'update': [IsAuthenticated, EmailOwner | IsAdminUser],

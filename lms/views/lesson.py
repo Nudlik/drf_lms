@@ -4,11 +4,13 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from lms.models import Lesson
 from lms.selializers.lesson import LessonSerializer
 from users.permissions import IsModerator, CourseOrLessonOwner
+from utils.pagination import DefaultPagination
 
 
 class LessonListView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    pagination_class = DefaultPagination
 
 
 class LessonCreateView(generics.CreateAPIView):
