@@ -7,7 +7,7 @@ from lms.selializers.lesson import LessonSerializer
 class CourseSerializer(serializers.ModelSerializer):
     lesson_count = serializers.IntegerField(source='lesson.count', read_only=True)
     lesson = LessonSerializer(read_only=True, many=True)
-    subscription = serializers.SerializerMethodField()
+    subscription = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Course
