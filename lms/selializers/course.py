@@ -7,6 +7,7 @@ from lms.selializers.lesson import LessonSerializer
 class CourseSerializer(serializers.ModelSerializer):
     lesson_count = serializers.IntegerField(source='lesson.count', read_only=True)
     lesson = LessonSerializer(read_only=True, many=True)
+    subscription = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
@@ -18,9 +19,14 @@ class CourseSerializer(serializers.ModelSerializer):
             'lesson_count',
             'lesson',
             'owner',
+            'subscription',
         ]
 
     def create(self, validated_data):
         course = Course.objects.create(**validated_data)
         course.owner = self.context['request'].user
         return course
+
+    def get_subscription(self, obj):
+        user = self.context['request'].user
+        return obj.subscription.filter(user=user).exists()
