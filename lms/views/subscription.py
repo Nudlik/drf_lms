@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework import views
 from rest_framework.exceptions import ValidationError
@@ -7,16 +8,23 @@ from rest_framework.response import Response
 
 from lms.models import Subscription, Course
 from lms.selializers.subscription import SubscriptionSerializer
+from lms.yasg import subscription_get, subscription_post, subscription_delete
 from utils.pagination import DefaultPagination
 
 
-class SubscriptionAPIView(views.APIView, DefaultPagination):
+@method_decorator(name='get', decorator=subscription_get)
+class SubscriptionDetailAPIView(views.APIView, DefaultPagination):
 
     def get(self, *args, **kwargs):
         subs = Subscription.objects.filter(user=self.request.user)
         page = self.paginate_queryset(subs, self.request)
         serializer = SubscriptionSerializer(page, many=True)
         return self.get_paginated_response(serializer.data)
+
+
+@method_decorator(name='post', decorator=subscription_post)
+@method_decorator(name='delete', decorator=subscription_delete)
+class SubscriptionCreateDeleteAPIView(views.APIView, DefaultPagination):
 
     def post(self, *args, **kwargs):
         course = self.get_course_or_404(Course, course_id=kwargs.get('pk'))
