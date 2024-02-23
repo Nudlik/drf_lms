@@ -12,7 +12,6 @@ from lms.yasg import subscription_get, subscription_post, subscription_delete
 from utils.pagination import DefaultPagination
 
 
-@method_decorator(name='get', decorator=subscription_get)
 class SubscriptionDetailAPIView(views.APIView, DefaultPagination):
 
     def get(self, *args, **kwargs):
@@ -22,8 +21,6 @@ class SubscriptionDetailAPIView(views.APIView, DefaultPagination):
         return self.get_paginated_response(serializer.data)
 
 
-@method_decorator(name='post', decorator=subscription_post)
-@method_decorator(name='delete', decorator=subscription_delete)
 class SubscriptionCreateDeleteAPIView(views.APIView, DefaultPagination):
 
     def post(self, *args, **kwargs):
@@ -58,3 +55,14 @@ class SubscriptionCreateDeleteAPIView(views.APIView, DefaultPagination):
         if isinstance(exc, Http404):
             return Response(exc.args[0], status=404)
         return super().handle_exception(exc)
+
+
+# декораторы для документации
+SubscriptionDetailAPIView = \
+    method_decorator(name='get', decorator=subscription_get)(SubscriptionDetailAPIView)
+
+SubscriptionCreateDeleteAPIView = \
+    method_decorator(name='post', decorator=subscription_post)(SubscriptionCreateDeleteAPIView)
+
+SubscriptionCreateDeleteAPIView = \
+    method_decorator(name='delete', decorator=subscription_delete)(SubscriptionCreateDeleteAPIView)

@@ -33,7 +33,7 @@ class TestsCRUDSubscription(TestCase):
         self.assertEqual(Subscription.objects.count(), 2)
 
     def test_list(self):
-        url = reverse('lms:sub-list')
+        url = reverse('lms:sub-detail')
         self.client.force_login(self.user)
         response = self.client.get(url)
         self.assertEqual(len(response.data['results']), 1)

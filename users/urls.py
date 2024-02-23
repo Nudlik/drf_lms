@@ -3,7 +3,8 @@ from rest_framework import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from users import apps
-from users.views import PaymentListView, UserViewSet
+from users.views.payments import PaymentListView
+from users.views.user import UserViewSet
 
 app_name = apps.UsersConfig.name
 router = routers.DefaultRouter()
