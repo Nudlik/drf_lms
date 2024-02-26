@@ -58,6 +58,7 @@ class User(AbstractUser):
     class Meta:
         verbose_name = _("user")
         verbose_name_plural = _("users")
+        ordering = ['id']
         permissions = [
             ('can_view_password', 'может просматривать пароль'),
             ('can_view_last_name', 'может просматривать фамилию'),

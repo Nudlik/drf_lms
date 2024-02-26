@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+import json
+import os.path
 from datetime import timedelta
 from pathlib import Path
 from environs import Env
@@ -29,7 +31,10 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'ed93-94-199-68-90.ngrok-free.app',
+]
 
 
 # Application definition
@@ -200,3 +205,13 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+# настройка stripe
+STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
+STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_WEBHOOK = env.str('STRIPE_SECRET_WEBHOOK')
+
+# настройка logging
+path_to_log = BASE_DIR / 'utils/log.json'
+if os.path.exists(path_to_log):
+    LOGGING = json.load(open(path_to_log))

@@ -15,6 +15,7 @@ class Course(models.Model):
         **NULLABLE,
         verbose_name='Владелец'
     )
+    price = models.DecimalField(max_digits=10, decimal_places=2, **NULLABLE, verbose_name='Цена')
 
     class Meta:
         verbose_name = 'Курс'
