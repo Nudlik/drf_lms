@@ -2,6 +2,8 @@ import stripe
 from django.conf import settings
 from django.urls import reverse
 
+WEB_HOOK_DESCRIPTION = 'checkout.session.completed'
+
 
 def checkout_session(name, price, description, domain_url):
     stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -27,5 +29,28 @@ def checkout_session(name, price, description, domain_url):
 
 
 def create_webhook():
-    stripe.api_key = settings.STRIPE_SECRET_KEY
+    try:
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        web_hook_url = reverse('users:webhook')
+        web_hook = get_webhook()
+        if web_hook is None:
+            web_hook = stripe.WebhookEndpoint.create(
+                enabled_events=['checkout.session.completed'],
+                url=f'{settings.STRIPE_WEBHOOK_URL}{web_hook_url}',
+                description='checkout.session.completed',
+            )
+        return web_hook
+    except Exception as e:
+        print(f'Ошибка при создании webhook {e}')
 
+
+def get_webhook():
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    try:
+        web_hooks = stripe.WebhookEndpoint.list()
+        for web_hook in web_hooks['data']:
+            if web_hook.get('description') == WEB_HOOK_DESCRIPTION:
+                return web_hook
+        return None
+    except Exception as e:
+        print(f'Ошибка при получении webhook {e}')

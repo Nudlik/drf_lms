@@ -31,6 +31,13 @@ pip install -r requirements.txt
 ``` PowerShell
 python .\manage.py migrate
 ```
+
+- Для создания веб хука, зайдите в панель администрирования страйпа и пропишите веб-хуки для эвента `checkout.session.completed`,
+запишите секретный ключ в .env `STRIPE_SECRET_WEBHOOK` или запустите команду и следуйте инструкциям
+  ``` PowerShell
+  python .\manage.py create_webhook
+  ```
+
 - Запустить программу из консоли/среды разработки
 ``` PowerShell
 python .\manage.py runserver

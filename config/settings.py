@@ -31,9 +31,10 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SITE_HOST_NAME = env.str('SITE_HOST_NAME')
 ALLOWED_HOSTS = [
     '127.0.0.1',
-    'ed93-94-199-68-90.ngrok-free.app',
+    SITE_HOST_NAME,
 ]
 
 
@@ -209,7 +210,8 @@ SIMPLE_JWT = {
 # настройка stripe
 STRIPE_SECRET_KEY = env.str('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = env.str('STRIPE_PUBLIC_KEY')
-STRIPE_SECRET_WEBHOOK = env.str('STRIPE_SECRET_WEBHOOK')
+STRIPE_SECRET_WEBHOOK = env.str('STRIPE_SECRET_WEBHOOK', None)
+STRIPE_WEBHOOK_URL = 'https://' + SITE_HOST_NAME
 
 # настройка logging
 path_to_log = BASE_DIR / 'utils/log.json'
