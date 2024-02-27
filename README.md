@@ -38,10 +38,13 @@ python .\manage.py migrate
   python .\manage.py create_webhook
   ```
 
+- Запустить `ngrok http 8000` и прописать в .env `SITE_HOST_NAME` Forwarding из консоли, пример `4dc9-94-199-68-90.ngrok-free.app`
+
 - Запустить программу из консоли/среды разработки
 ``` PowerShell
 python .\manage.py runserver
 ```
+
 ### Полезные команды
 - Запуск подсчета покрытия и вывод отчета
 - Создание локальной бд с информацией о тестах
