@@ -15,10 +15,13 @@ from rest_framework.response import Response
 from lms.models import Course
 from users.models import Payments
 from users.serializers.payments import PaymentSerializer
-from users.services import checkout_session
+from users.services import stripe_checkout_session, stripe_create_price, \
+    get_or_create_stripe_product, finish_payment_entry, begin_payment_entry
 from utils.pagination import DefaultPagination
 
 logger = logging.getLogger(__name__)
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class PaymentListView(generics.ListAPIView):
@@ -32,33 +35,28 @@ class PaymentListView(generics.ListAPIView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateCheckOutSession(views.APIView):
+    """ Создание сессии для оплаты """
 
     def post(self, *args, **kwargs):
         product_id = self.kwargs['pk']
-        domain_url = '/'.join(self.request.build_absolute_uri().rsplit('/')[:3])
         try:
-            is_payed = Payments.objects.filter(user_id=self.request.user.id, course_id=product_id).order_by('-date')
+            is_payed = Payments.objects.filter(user=self.request.user, course_id=product_id).order_by('-date')
             if is_payed.exists():
                 if is_payed[0].payed:
                     return Response({'detail': 'Вы уже оплатили этот курс'}, status=status.HTTP_208_ALREADY_REPORTED)
                 else:
                     return Response({'buy_link': is_payed[0].url})
 
+            domain_url = '/'.join(self.request.build_absolute_uri().rsplit('/')[:3])
             product = Course.objects.get(id=product_id)
-            session = checkout_session(
-                name=product.title,
-                price=product.price,
-                description=product.description,
-                domain_url=domain_url,
-            )
+
+            get_or_create_stripe_product(product)
+            stripe_price = stripe_create_price(product)
+            session = stripe_checkout_session(stripe_price, domain_url)
+
             logger.debug(json.dumps(session, indent=4, ensure_ascii=False))
-            payment = Payments.objects.create(
-                session_id=session.id,
-                url=session.url,
-                user=self.request.user,
-                course=product
-            )
-            payment.save()
+            begin_payment_entry(session, product, self.request.user)
+
             return Response({'buy_link': session.url})
         except (Course.DoesNotExist, Course.MultipleObjectsReturned):
             return Response({'detail': f'Курс c id {product_id} не найден'}, status=status.HTTP_404_NOT_FOUND)
@@ -71,18 +69,25 @@ class CreateCheckOutSession(views.APIView):
 
 @api_view(['GET'])
 def success(request):
+    """ Успешная оплата """
+
     logger.info('Успешная оплата')
     return Response({'success': True})
 
 
 @api_view(['GET'])
 def canceled(request):
+    """ Отмена оплаты """
+
+    logger.info('Отмена оплаты')
     return Response({'canceled': True})
 
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def webhook(request):
+    """ Обработка событий stripe """
+
     event = None
     payload = request.body
     sig_header = request.headers['STRIPE_SIGNATURE']
@@ -100,16 +105,6 @@ def webhook(request):
     # Handle the event
     logger.debug('Unhandled event type {}'.format(event['type']))
     if event['type'] == 'checkout.session.completed':
-        session = event['data']['object']
-        session_id = session['id']
-        payment_method = session['payment_method_types'][0] if len(session['payment_method_types']) else 'card'
-        payment_amount = session['amount_total'] / 100
-
-        payment = Payments.objects.get(session_id=session_id)
-        payment.payed = True
-        payment.session_id = session_id
-        payment.payment_amount = payment_amount
-        payment.payment_method = payment_method
-        payment.save()
+        finish_payment_entry(event)
 
     return Response({'success': True})
