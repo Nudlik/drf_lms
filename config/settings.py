@@ -151,6 +151,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'users.User'
 
+#  настройки REST фреймворка
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -161,6 +162,7 @@ REST_FRAMEWORK = {
     ]
 }
 
+#  настройка JWT токенов
 REFRESH_TOKEN_LIFETIME = timedelta(days=1)
 if DEBUG:
     ACCESS_TOKEN_LIFETIME = REFRESH_TOKEN_LIFETIME
@@ -216,4 +218,5 @@ STRIPE_WEBHOOK_URL = 'https://' + SITE_HOST_NAME
 # настройка logging
 path_to_log = BASE_DIR / 'utils/log.json'
 if os.path.exists(path_to_log):
-    LOGGING = json.load(open(path_to_log))
+    with open(path_to_log, encoding='utf-8') as log:
+        LOGGING = json.load(log)
