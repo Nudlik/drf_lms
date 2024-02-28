@@ -1,8 +1,8 @@
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 
+from lms.pagination import LMSPagination
 from lms.selializers.subscription import SubscriptionSerializer
-from utils.pagination import DefaultPagination
 
 subscription_post = \
     swagger_auto_schema(
@@ -44,5 +44,5 @@ subscription_get = \
             200: SubscriptionSerializer(many=True)
         },
         operation_description='Получить подписки',
-        paginator_inspectors=[DefaultPagination],
+        paginator_inspectors=[LMSPagination],
     )

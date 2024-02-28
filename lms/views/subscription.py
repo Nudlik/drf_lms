@@ -7,12 +7,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from lms.models import Subscription, Course
+from lms.pagination import LMSPagination
 from lms.selializers.subscription import SubscriptionSerializer
 from lms.yasg import subscription_get, subscription_post, subscription_delete
-from utils.pagination import DefaultPagination
 
 
-class SubscriptionDetailAPIView(views.APIView, DefaultPagination):
+class SubscriptionDetailAPIView(views.APIView, LMSPagination):
 
     def get(self, *args, **kwargs):
         subs = Subscription.objects.filter(user=self.request.user)
@@ -21,7 +21,7 @@ class SubscriptionDetailAPIView(views.APIView, DefaultPagination):
         return self.get_paginated_response(serializer.data)
 
 
-class SubscriptionCreateDeleteAPIView(views.APIView, DefaultPagination):
+class SubscriptionCreateDeleteAPIView(views.APIView, LMSPagination):
 
     def post(self, *args, **kwargs):
         course = self.get_course_or_404(Course, course_id=kwargs.get('pk'))

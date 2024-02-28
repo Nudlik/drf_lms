@@ -2,15 +2,15 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
 from lms.models import Course
+from lms.pagination import LMSPagination
 from lms.selializers.course import CourseSerializer
 from users.permissions import CourseOrLessonOwner, IsModerator
-from utils.pagination import DefaultPagination
 
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    pagination_class = DefaultPagination
+    pagination_class = LMSPagination
     perms_methods = {
         'create': [IsAuthenticated, ~IsModerator],
         'destroy': [IsAuthenticated, CourseOrLessonOwner, ~IsModerator],

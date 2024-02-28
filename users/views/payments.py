@@ -14,10 +14,10 @@ from rest_framework.response import Response
 
 from lms.models import Course
 from users.models import Payments
+from users.pagination import UserPagination
 from users.serializers.payments import PaymentSerializer
 from users.services import stripe_checkout_session, stripe_create_price, \
     get_or_create_stripe_product, finish_payment_entry, begin_payment_entry
-from utils.pagination import DefaultPagination
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +27,7 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 class PaymentListView(generics.ListAPIView):
     serializer_class = PaymentSerializer
     queryset = Payments.objects.all()
-    pagination_class = DefaultPagination
+    pagination_class = UserPagination
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ['date']
     filterset_fields = ['course', 'lesson', 'payment_method']
