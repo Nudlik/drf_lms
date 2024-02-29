@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.urls import reverse
 
-from users.models import Payments
+from users.models import Payments, Prices
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 WEB_HOOK_DESCRIPTION = 'checkout.session.completed'
@@ -108,6 +108,13 @@ def get_or_create_stripe_product(product: QuerySet.get) -> stripe.Product:
         return stripe_create_product(product)
     else:
         return is_create
+
+
+def set_stripe_price(prices: QuerySet.get) -> stripe.Price:
+    """ Установка существующей цены stripe """
+
+    stripe_price = stripe.Price.retrieve(prices.stripe_price_id)
+    return stripe_price
 
 
 def generate_id(product: QuerySet.get) -> str:

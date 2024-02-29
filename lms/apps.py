@@ -5,3 +5,6 @@ class LmsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'lms'
     verbose_name = 'Онлайн-обучение'
+
+    def ready(self):
+        import lms.signals
