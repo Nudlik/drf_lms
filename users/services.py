@@ -11,7 +11,7 @@ WEB_HOOK_DESCRIPTION = 'checkout.session.completed'
 
 
 def stripe_checkout_session(
-        price: stripe.Price,
+        stripe_price_id: str,
         domain_url: str
 ) -> stripe.checkout.Session:
     """ Создание сеанса stripe """
@@ -19,7 +19,7 @@ def stripe_checkout_session(
     session = stripe.checkout.Session.create(
         line_items=[
             {
-                'price': price.id,
+                'price': stripe_price_id,
                 'quantity': 1,
             },
         ],

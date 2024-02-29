@@ -3,6 +3,7 @@ import logging
 
 import stripe
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django_filters.rest_framework import DjangoFilterBackend
@@ -13,11 +14,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from lms.models import Course
-from users.models import Payments
+from users.models import Payments, Prices
 from users.pagination import UserPagination
 from users.serializers.payments import PaymentSerializer
-from users.services import stripe_checkout_session, stripe_create_price, \
-    get_or_create_stripe_product, finish_payment_entry, begin_payment_entry
+from users.services import stripe_checkout_session, finish_payment_entry, begin_payment_entry
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +39,8 @@ class CreateCheckOutSession(views.APIView):
 
     def post(self, *args, **kwargs):
         product_id = self.kwargs['pk']
-        try:
+        try:  # TODO здесь ссылка может протухнуть и не пройти оплата если юзер в 1 раз решил не оплатить
+            # TODO можно в модели сделать поле со временем начала операции, нужно узнать сколько живет ссылка у stripe
             is_payed = Payments.objects.filter(user=self.request.user, course_id=product_id).order_by('-date')
             if is_payed.exists():
                 if is_payed[0].payed:
@@ -50,9 +51,11 @@ class CreateCheckOutSession(views.APIView):
             domain_url = '/'.join(self.request.build_absolute_uri().rsplit('/')[:3])
             product = Course.objects.get(id=product_id)
 
-            get_or_create_stripe_product(product)
-            stripe_price = stripe_create_price(product)
-            session = stripe_checkout_session(stripe_price, domain_url)
+            stripe_price_id = Prices.objects.get(
+                content_type=ContentType.objects.get_for_model(product),
+                object_id=product.id
+            ).stripe_price_id
+            session = stripe_checkout_session(stripe_price_id, domain_url)
 
             logger.debug(json.dumps(session, indent=4, ensure_ascii=False))
             begin_payment_entry(session, product, self.request.user)
