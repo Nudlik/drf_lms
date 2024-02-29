@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from users.models import User
+from users.models import User, Payments, Prices
 
 
 @admin.register(User)
@@ -51,3 +51,13 @@ class UserAdmin(admin.ModelAdmin):
             }
         ),
     )
+
+
+@admin.register(Payments)
+class PaymentsAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Prices)
+class PricesAdmin(admin.ModelAdmin):
+    pass

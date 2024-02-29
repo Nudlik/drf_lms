@@ -7,7 +7,7 @@ from utils.const import NULLABLE
 class Course(models.Model):
     title = models.CharField(max_length=255, verbose_name='Название')
     preview = models.ImageField(upload_to='course', **NULLABLE, verbose_name='Фото')
-    description = models.TextField(**NULLABLE, verbose_name='Описание')
+    description = models.TextField(verbose_name='Описание')
     owner = models.ForeignKey(
         to=get_user_model(),
         on_delete=models.SET_NULL,
