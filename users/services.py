@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import QuerySet
 from django.urls import reverse
 
-from users.models import Payments, Prices
+from users.models import Payments
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 WEB_HOOK_DESCRIPTION = 'checkout.session.completed'
@@ -103,11 +103,11 @@ def get_or_create_stripe_product(product: QuerySet.get) -> stripe.Product:
 
     product_id = generate_id(product)
     try:
-        is_create = stripe.Product.retrieve(product_id)
+        stripe_product = stripe.Product.retrieve(product_id)
     except stripe.error.InvalidRequestError:
         return stripe_create_product(product)
     else:
-        return is_create
+        return stripe_product
 
 
 def set_stripe_price(prices: QuerySet.get) -> stripe.Price:
@@ -115,6 +115,18 @@ def set_stripe_price(prices: QuerySet.get) -> stripe.Price:
 
     stripe_price = stripe.Price.retrieve(prices.stripe_price_id)
     return stripe_price
+
+
+def stripe_delete_product(product: QuerySet.get) -> stripe.Product:
+    """
+    Удаление продукта у stripe
+    Возвращает удаленный продукт
+    На самом деле это имитация удаления, страйп ничего не удаляет :(
+    """
+
+    product_id = generate_id(product)
+    stripe_product = stripe.Product.modify(id=product_id, active=False)
+    return stripe_product
 
 
 def generate_id(product: QuerySet.get) -> str:
