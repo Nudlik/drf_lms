@@ -20,3 +20,6 @@ class Prices(models.Model):
         verbose_name = 'Цена'
         verbose_name_plural = 'Цены'
         ordering = ['id']
+
+    def __str__(self):
+        return self.product.title
