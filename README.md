@@ -51,6 +51,16 @@
 - Запустить `ngrok http 8000` и прописать в .env `SITE_HOST_NAME` Forwarding из консоли, пример 
 `4dc9-94-199-68-90.ngrok-free.app`
 
+- Запустить брокер redis, заходим в wsl
+  ``` PowerShell
+  sudo service redis-server start
+  ```
+
+- Запускаем worker в Celery, возможно для windows понадобится флаг `-P eventlet`
+  ``` PowerShell
+  celery -A config worker -l INFO
+  ```
+
 - Запустить программу из консоли/среды разработки
   ``` PowerShell
   python .\manage.py runserver
