@@ -60,6 +60,11 @@
   ``` PowerShell
   celery -A config worker -l INFO -P eventlet
   ```
+  
+- Запускаем периодические задачи Celery beat
+  ``` PowerShell
+  celery -A config beat -l INFO -S django
+  ```
 
 - Запустить программу из консоли/среды разработки
   ``` PowerShell

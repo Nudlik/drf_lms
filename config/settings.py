@@ -242,3 +242,11 @@ EMAIL_PORT = env.int('EMAIL_PORT')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
+
+# настройки celery beat
+CELERY_BEAT_SCHEDULE = {
+    'Блокировка не активных пользователей': {
+        'task': 'users.tasks.deactivate_inactive_users',
+        'schedule': timedelta(days=1),
+    },
+}

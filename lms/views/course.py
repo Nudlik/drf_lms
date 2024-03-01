@@ -31,7 +31,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         # проверка на то, что уведомление отправляется только в том случае, если курс не обновлялся более четырех часов.
         instance.time_update = timezone.now()
-        time_cooldown = timedelta(minutes=1)
+        time_cooldown = timedelta(hours=4)
         if instance.time_update > instance.time_last_send + time_cooldown:
             instance.time_last_send = timezone.now()
 
