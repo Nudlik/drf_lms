@@ -56,9 +56,9 @@
   sudo service redis-server start
   ```
 
-- Запускаем worker в Celery, возможно для windows понадобится флаг `-P eventlet`
+- Запускаем worker в Celery
   ``` PowerShell
-  celery -A config worker -l INFO
+  celery -A config worker -l INFO -P eventlet
   ```
 
 - Запустить программу из консоли/среды разработки
