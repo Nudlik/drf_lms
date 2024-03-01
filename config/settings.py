@@ -30,6 +30,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG_EMAIL = env.bool('DEBUG_EMAIL', False)
 
 SITE_HOST_NAME = env.str('SITE_HOST_NAME')
 ALLOWED_HOSTS = [
@@ -227,3 +228,16 @@ CELERY_RESULT_BACKEND = env.str('REDIS_LOCATION')
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
+
+
+# почтовые настройки для рассылок
+if DEBUG_EMAIL:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
