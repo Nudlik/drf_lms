@@ -23,3 +23,11 @@ class LessonSerializer(serializers.ModelSerializer):
         lesson = Lesson.objects.create(**validated_data)
         lesson.owner = self.context['request'].user
         return lesson
+
+    def update(self, instance, validated_data):
+        for field in self.get_fields():
+            if field == 'owner':  # При правке модератором не меняем владельца
+                continue
+            setattr(instance, field, validated_data.get(field, getattr(instance, field)))
+        instance.save()
+        return instance
