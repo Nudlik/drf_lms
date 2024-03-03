@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.db.models import signals
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
@@ -9,6 +10,9 @@ from lms.models import Course, Subscription
 class TestsCRUDSubscription(TestCase):
 
     def setUp(self):
+        signals.post_save.disconnect(sender=Course, dispatch_uid='Course_post_save')
+        signals.pre_delete.disconnect(sender=Course, dispatch_uid='Course_pre_delete')
+
         self.user = get_user_model().objects.create(email='1@1.ru', password='1234')
         self.user.save()
 

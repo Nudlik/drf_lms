@@ -1,19 +1,20 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+from django.db.models import signals
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, force_authenticate, APIRequestFactory
 
 from lms.models import Course, Lesson
-from lms.selializers.course import CourseSerializer
 from lms.selializers.lesson import LessonSerializer
-from lms.views import LessonUpdateView
 
 
 class TestsCRUDCourse(TestCase):
 
     def setUp(self):
+        signals.post_save.disconnect(sender=Course, dispatch_uid='Course_post_save')
+        signals.pre_delete.disconnect(sender=Course, dispatch_uid='Course_pre_delete')
+
         moder_group, _ = Group.objects.get_or_create(name='moderator')
         self.moderator = get_user_model().objects.create(email='1@1.ru', password='1234')
         self.moderator.groups.add(moder_group)

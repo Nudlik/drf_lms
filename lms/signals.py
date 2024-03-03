@@ -7,7 +7,7 @@ from users.models import Prices
 from users.services import stripe_create_price, get_or_create_stripe_product, stripe_delete_product
 
 
-@receiver(post_save, sender=Course)
+@receiver(post_save, sender=Course, dispatch_uid='Course_post_save')
 def post_save_stripe_price_id(sender, instance, created, **kwargs):
     get_or_create_stripe_product(instance)
 
@@ -23,7 +23,7 @@ def post_save_stripe_price_id(sender, instance, created, **kwargs):
     prices.save()
 
 
-@receiver(pre_delete, sender=Course)
+@receiver(pre_delete, sender=Course, dispatch_uid='Course_pre_delete')
 def pre_delete_course(sender, instance, **kwargs):
     stripe_delete_product(instance)
 
