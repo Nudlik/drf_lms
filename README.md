@@ -103,4 +103,8 @@
 
 ### Stripe ссылки
 
-- 2
+- Панель `https://dashboard.stripe.com/test/dashboard`
+
+- Дока `https://docs.stripe.com/api`
+
+- Быстрый старт `https://docs.stripe.com/payments/quickstart`
