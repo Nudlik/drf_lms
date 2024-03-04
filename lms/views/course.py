@@ -6,7 +6,7 @@ from lms.apps import LmsConfig
 from lms.models import Course
 from lms.pagination import LMSPagination
 from lms.selializers.course import CourseSerializer
-from lms.tasks import task_send_mail_for_subscribers, get_data_for_email
+from lms.tasks import task_send_mail_for_subscribers, get_absolute_url
 from users.permissions import CourseOrLessonOwner, IsModerator
 
 
@@ -35,7 +35,7 @@ class CourseViewSet(viewsets.ModelViewSet):
 
             subscribers = instance.subscription.all()
             for subscriber in subscribers:
-                url = get_data_for_email(self.request, instance)
+                url = get_absolute_url(self.request, instance)
 
                 task_send_mail_for_subscribers.delay(
                     subject=f'В курс "{instance.title}" добавился новый контент',

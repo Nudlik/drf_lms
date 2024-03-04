@@ -7,7 +7,7 @@ from lms.apps import LmsConfig
 from lms.models import Lesson, Subscription
 from lms.pagination import LMSPagination
 from lms.selializers.lesson import LessonSerializer
-from lms.tasks import get_data_for_email, task_send_mail_for_subscribers
+from lms.tasks import get_absolute_url, task_send_mail_for_subscribers
 from users.permissions import IsModerator, CourseOrLessonOwner
 
 
@@ -46,7 +46,7 @@ class LessonUpdateView(generics.UpdateAPIView):
 
             subscribers = Subscription.objects.filter(course_id=instance.course_id)
             for subscriber in subscribers:
-                url = get_data_for_email(request, instance)
+                url = get_absolute_url(request, instance)
 
                 task_send_mail_for_subscribers.delay(
                     subject=f'В курсе "{course.title}" обновился урок {instance.title}',

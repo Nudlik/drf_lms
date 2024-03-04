@@ -23,7 +23,7 @@ def task_send_mail_for_subscribers(subject: str, message: str, email: str) -> No
     logger.debug(f'Send email to {email}')
 
 
-def get_data_for_email(request: HttpRequest, obj: QuerySet.get) -> str:
+def get_absolute_url(request: HttpRequest, obj: QuerySet.get) -> str:
     domain = get_current_site(request).domain
     protocol = request.scheme
     absolute_url = f'{protocol}://{domain}{obj.get_absolute_url()}'
