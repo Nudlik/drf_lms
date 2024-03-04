@@ -17,6 +17,7 @@ class Lesson(models.Model):
         **NULLABLE,
         verbose_name='Владелец'
     )
+    time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
 
     class Meta:
         verbose_name = 'Урок'
@@ -24,4 +25,4 @@ class Lesson(models.Model):
         ordering = ['id']
 
     def __str__(self):
-        return self.title
+        return f'Курс {self.course} | Урок {self.title}'
