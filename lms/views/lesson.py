@@ -48,7 +48,7 @@ class LessonUpdateView(generics.UpdateAPIView):
             for subscriber in subscribers:
                 url = get_data_for_email(request, instance)
 
-                task_send_mail_for_subscribers(
+                task_send_mail_for_subscribers.delay(
                     subject=f'В курсе "{course.title}" обновился урок {instance.title}',
                     message=f'Перейдите по ссылке для просмотра {url}',
                     email=subscriber.user.email,
