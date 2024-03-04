@@ -1,10 +1,9 @@
-from datetime import timedelta
-from lms.apps import LmsConfig
 from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
+from lms.apps import LmsConfig
 from lms.models import Lesson, Subscription
 from lms.pagination import LMSPagination
 from lms.selializers.lesson import LessonSerializer

@@ -5,7 +5,6 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.db.models import QuerySet
 from django.http import HttpRequest
-from django.urls import reverse
 
 from config.settings import env
 
