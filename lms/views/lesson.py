@@ -35,7 +35,6 @@ class LessonUpdateView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated, IsAdminUser | CourseOrLessonOwner | IsModerator]
 
     def partial_update(self, request, *args, **kwargs):
-        # TODO сделать отправку на почту при обновлении урока
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -48,10 +47,10 @@ class LessonUpdateView(generics.UpdateAPIView):
 
             subscribers = Subscription.objects.filter(course_id=instance.course_id)
             for subscriber in subscribers:
-                url, title = get_data_for_email(request, instance, 'lms:lesson-detail')
+                url = get_data_for_email(request, instance)
 
                 task_send_mail_for_subscribers(
-                    subject=f'В курсе "{course.title}" обновился урок {title}',
+                    subject=f'В курсе "{course.title}" обновился урок {instance.title}',
                     message=f'Перейдите по ссылке для просмотра {url}',
                     email=subscriber.user.email,
                 )

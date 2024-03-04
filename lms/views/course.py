@@ -37,14 +37,10 @@ class CourseViewSet(viewsets.ModelViewSet):
 
             subscribers = instance.subscription.all()
             for subscriber in subscribers:
-                url, title = get_data_for_email(
-                    self.request,
-                    instance,
-                    'lms:course-detail',
-                )
+                url = get_data_for_email(self.request, instance)
 
                 task_send_mail_for_subscribers.delay(
-                    subject=f'В курс "{title}" добавился новый контент',
+                    subject=f'В курс "{instance.title}" добавился новый контент',
                     message=f'Перейдите по ссылке для просмотра {url}',
                     email=subscriber.user.email,
                 )
