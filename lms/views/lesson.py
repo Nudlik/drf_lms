@@ -1,10 +1,14 @@
+from datetime import timedelta
+from lms.apps import LmsConfig
+from django.utils import timezone
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
-from lms.models import Lesson
+from lms.models import Lesson, Subscription
 from lms.pagination import LMSPagination
 from lms.selializers.lesson import LessonSerializer
+from lms.tasks import get_data_for_email, task_send_mail_for_subscribers
 from users.permissions import IsModerator, CourseOrLessonOwner
 
 
@@ -36,6 +40,22 @@ class LessonUpdateView(generics.UpdateAPIView):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
+
+        course = instance.course
+        if course.time_last_send + LmsConfig.TIME_COOLDOWN < instance.time_update:
+            course.time_last_send = timezone.now()
+            course.save()
+
+            subscribers = Subscription.objects.filter(course_id=instance.course_id)
+            for subscriber in subscribers:
+                url, title = get_data_for_email(request, instance, 'lms:lesson-detail')
+
+                task_send_mail_for_subscribers(
+                    subject=f'В курсе "{course.title}" обновился урок {title}',
+                    message=f'Перейдите по ссылке для просмотра {url}',
+                    email=subscriber.user.email,
+                )
+
         return Response(serializer.data)
 
 

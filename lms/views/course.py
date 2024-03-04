@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 
+from lms.apps import LmsConfig
 from lms.models import Course
 from lms.pagination import LMSPagination
 from lms.selializers.course import CourseSerializer
@@ -31,13 +32,21 @@ class CourseViewSet(viewsets.ModelViewSet):
 
         # проверка на то, что уведомление отправляется только в том случае, если курс не обновлялся более четырех часов.
         instance.time_update = timezone.now()
-        time_cooldown = timedelta(hours=4)
-        if instance.time_update > instance.time_last_send + time_cooldown:
+        if instance.time_update > instance.time_last_send + LmsConfig.TIME_COOLDOWN:
             instance.time_last_send = timezone.now()
 
             subscribers = instance.subscription.all()
             for subscriber in subscribers:
-                data = get_data_for_email(self.request, instance, subscriber.user.email)
-                task_send_mail_for_subscribers.delay(*data)
+                url, title = get_data_for_email(
+                    self.request,
+                    instance,
+                    'lms:course-detail',
+                )
+
+                task_send_mail_for_subscribers.delay(
+                    subject=f'В курс "{title}" добавился новый контент',
+                    message=f'Перейдите по ссылке для просмотра {url}',
+                    email=subscriber.user.email,
+                )
 
         super().perform_update(serializer)
