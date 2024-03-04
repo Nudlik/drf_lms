@@ -16,7 +16,7 @@
 
 - Склонировать репозиторий
   ``` PowerShell
-  git clone https://github.com/Nudlik/mailer_service.git
+  https://github.com/Nudlik/drf_lms.git
   ```
 
 - Cоздать виртуальное окружение
