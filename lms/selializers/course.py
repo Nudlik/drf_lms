@@ -11,7 +11,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = '__all__'
+        exclude = ['time_last_send']
 
     def create(self, validated_data):
         course = Course.objects.create(**validated_data)
