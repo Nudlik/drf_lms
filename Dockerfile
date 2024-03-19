@@ -7,8 +7,6 @@ WORKDIR /drf_lms
 
 COPY ./requirements.txt /drf_lms/requirements.txt
 
-RUN pip install --upgrade pip
-
-RUN pip install -r requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .

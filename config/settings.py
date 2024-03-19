@@ -36,6 +36,7 @@ SITE_HOST_NAME = env.str('SITE_HOST_NAME')
 ALLOWED_HOSTS = [
     '127.0.0.1',
     SITE_HOST_NAME,
+    *env.list('ALLOWED_HOSTS_NAMES'),
 ]
 
 
