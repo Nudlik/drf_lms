@@ -74,9 +74,10 @@ def stripe_create_product(product: QuerySet.get) -> stripe.Product:
 def stripe_create_price(product: QuerySet.get) -> stripe.Price:
     """ Создание цены stripe """
 
+    price = product.price if (p := hasattr(product, 'price')) and p is None else 0
     stripe_price = stripe.Price.create(
         currency='rub',
-        unit_amount=int(product.price) * 100,
+        unit_amount=int(price) * 100,
         product=generate_id(product),
     )
     return stripe_price

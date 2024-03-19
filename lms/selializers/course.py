@@ -11,16 +11,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = [
-            'id',
-            'title',
-            'preview',
-            'description',
-            'lesson_count',
-            'lesson',
-            'owner',
-            'subscription',
-        ]
+        fields = '__all__'
 
     def create(self, validated_data):
         course = Course.objects.create(**validated_data)
